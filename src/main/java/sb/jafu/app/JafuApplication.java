@@ -49,6 +49,7 @@ public class JafuApplication {
 					, () ->	route()
 							.GET("/text", accept(TEXT_PLAIN), handler::getTextResponse)
 							.GET("/json", accept(APPLICATION_JSON), handler::getMessageJsonResponse)
+                            .POST("/json", accept(APPLICATION_JSON).and(contentType(APPLICATION_JSON)), handler::postMessageJson)
 							.build());
 
 			serverProperties.setPort(8080);
