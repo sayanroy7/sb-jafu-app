@@ -11,8 +11,8 @@ echo "Testing $EXECUTABLE output"
 PID=$!
 sleep 3
 
-RESPONSE=`curl -s localhost:8080/`
-if [[ "$RESPONSE" == 'Hello' ]]
+RESPONSE=`curl -s localhost:8080/text`
+if [[ "$RESPONSE" == 'This is text/plain message from Jafu RestHandler which is similar to @RestController' ]]
 then
   printf "${GREEN}SUCCESS${NC}\n"
   if [[ $1 != "-s" ]]; then  # enable silent mode to avoid the below
