@@ -1,4 +1,4 @@
-package com.example.jafu;
+package sb.jafu.app;
 
 import org.junit.jupiter.api.Test;
 

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
-ARTIFACT=jafu-webmvc
-MAINCLASS=com.example.jafu.JafuApplication
+ARTIFACT=sb-jafu-app
+MAINCLASS=sb.jafu.app.JafuApplication
 VERSION=0.0.1-SNAPSHOT
 
 GREEN='\033[0;32m'

@@ -1,10 +1,9 @@
-package com.example.jafu.handler;
+package sb.jafu.app.handler;
 
-import com.example.jafu.model.Message;
-import com.example.jafu.model.Metadata;
+import sb.jafu.app.model.Message;
+import sb.jafu.app.model.Metadata;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.MediaType;
 import org.springframework.web.servlet.function.ServerRequest;
 import org.springframework.web.servlet.function.ServerResponse;

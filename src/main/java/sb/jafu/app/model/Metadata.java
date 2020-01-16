@@ -1,4 +1,4 @@
-package com.example.jafu.model;
+package sb.jafu.app.model;
 
 import java.util.Map;
 

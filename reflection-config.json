@@ -207,7 +207,7 @@
     "allPublicMethods": true
   },
   {
-    "name": "com.example.jafu.model.Message",
+    "name": "sb.jafu.app.model.Message",
     "allDeclaredConstructors": true,
     "allDeclaredFields": true,
     "allPublicFields": true,
@@ -215,7 +215,7 @@
     "allPublicMethods": true
   },
   {
-    "name": "com.example.jafu.model.Metadata",
+    "name": "sb.jafu.app.model.Metadata",
     "allDeclaredConstructors": true,
     "allDeclaredFields": true,
     "allPublicFields": true,
