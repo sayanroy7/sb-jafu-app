@@ -207,6 +207,14 @@
     "allPublicMethods": true
   },
   {
+    "name": "sb.jafu.app.handler.error.JafuResponseEntityExceptionHandler",
+    "allDeclaredConstructors": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true
+  },
+  {
     "name": "sb.jafu.app.model.Message",
     "allDeclaredConstructors": true,
     "allDeclaredFields": true,
@@ -221,5 +229,62 @@
     "allPublicFields": true,
     "allDeclaredMethods": true,
     "allPublicMethods": true
+  },
+  {
+    "name": "sb.jafu.app.handler.error.CommonErrorResponse",
+    "allDeclaredConstructors": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true
+  },
+  {
+    "name": "sb.jafu.app.handler.error.CommonErrorResponseBuilder",
+    "allDeclaredConstructors": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true
+  },
+  {
+    "name": "sb.jafu.app.handler.error.ErrorResultUtil",
+    "allDeclaredConstructors": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true
+  },
+  {
+    "name": "sb.jafu.app.handler.error.JafuExceptionHandlerExceptionResolver",
+    "allDeclaredConstructors": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true
+  },
+  {
+    "name": "sb.jafu.app.handler.error.JafuResponseEntityExceptionHandler",
+    "allDeclaredConstructors": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true
+  },
+  {
+    "name": "org.springframework.context.support.JafuWebMvcRegistrations",
+    "allDeclaredConstructors": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true
+  },
+  {
+    "name": "org.springframework.http.HttpStatus",
+    "allDeclaredConstructors": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true
   }
 ]
+

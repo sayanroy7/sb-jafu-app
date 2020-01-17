@@ -1,6 +1,5 @@
 package sb.jafu.app;
 
-import sb.jafu.app.handler.JafuApplicationRestHandler;
 import org.springframework.beans.factory.support.BeanDefinitionReaderUtils;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -16,15 +15,26 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.GenericApplicationContext;
+import org.springframework.context.support.JafuWebMvcRegistrations;
 import org.springframework.context.support.ServletWebServerApplicationContextWithoutSpel;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.servlet.function.RouterFunction;
 import org.springframework.web.servlet.function.RouterFunctionDsl;
+import org.springframework.web.servlet.function.ServerResponse;
+import org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver;
+import sb.jafu.app.handler.JafuApplicationRestHandler;
+import sb.jafu.app.handler.error.CommonErrorResponse;
+import sb.jafu.app.handler.error.ErrorResultUtil;
+import sb.jafu.app.handler.error.JafuResponseEntityExceptionHandler;
 
 import java.util.Arrays;
+import java.util.Objects;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.http.MediaType.TEXT_PLAIN;
-import static org.springframework.web.servlet.function.RequestPredicates.*;
+import static org.springframework.web.servlet.function.RequestPredicates.accept;
+import static org.springframework.web.servlet.function.RequestPredicates.contentType;
 import static org.springframework.web.servlet.function.RouterFunctions.route;
 
 public class JafuApplication {
@@ -47,6 +57,13 @@ public class JafuApplication {
 			JafuApplicationRestHandler handler = new JafuApplicationRestHandler();
 			context.registerBean(BeanDefinitionReaderUtils.uniqueBeanName(RouterFunctionDsl.class.getName(), context), RouterFunction.class
 					, () ->	route()
+							.onError((ex-> ex instanceof HttpMessageNotReadableException), (t, request) -> {
+								HttpMessageNotReadableException ee = (HttpMessageNotReadableException) t;
+								String instanceDetails = "http message not readable: " + ee.getMostSpecificCause().getMessage();
+								String instanceDebugDetails = "-";
+								CommonErrorResponse resp = ErrorResultUtil.logAndGetCommonErrorResponse(ee, instanceDetails, instanceDebugDetails);
+								return ServerResponse.status(HttpStatus.BAD_REQUEST).contentType(APPLICATION_JSON).body(resp);
+							})
 							.GET("/text", accept(TEXT_PLAIN), handler::getTextResponse)
 							.GET("/json", accept(APPLICATION_JSON), handler::getMessageJsonResponse)
                             .POST("/json", accept(APPLICATION_JSON).and(contentType(APPLICATION_JSON)), handler::postMessageJson)
@@ -58,6 +75,12 @@ public class JafuApplication {
 
 			new JacksonInitializer(new JacksonProperties()).initialize(context);
 			new JacksonJsonConverterInitializer().initialize(context);
+
+
+			context.registerBean(WebMvcRegistrations.class, JafuWebMvcRegistrations::new);
+			context.registerBean(BeanDefinitionReaderUtils.uniqueBeanName(JafuResponseEntityExceptionHandler.class.getName(), context)
+					, JafuResponseEntityExceptionHandler.class, () -> new JafuResponseEntityExceptionHandler(context.getEnvironment()));
+			webMvcProperties.setThrowExceptionIfNoHandlerFound(true);
 			new ServletWebServerInitializer(serverProperties, httpProperties, webMvcProperties, resourceProperties).initialize(context);
 		};
 	}
