@@ -34,8 +34,6 @@ public class JafuExceptionHandlerExceptionResolver extends ExceptionHandlerExcep
             HttpServletRequest request, HttpServletResponse response,
             HandlerMethod handlerMethod, Exception exception) {
 
-        LOGGER.error("Exception Handling... ", exception);
-
         ResponseEntityExceptionHandler handler = getApplicationContext().getBean(ResponseEntityExceptionHandler.class);
         ResponseEntity<?> responseEntity = null;
         ServletWebRequest servletWebRequest = new ServletWebRequest(request, response);

@@ -17,24 +17,17 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.GenericApplicationContext;
 import org.springframework.context.support.JafuWebMvcRegistrations;
 import org.springframework.context.support.ServletWebServerApplicationContextWithoutSpel;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.servlet.function.RouterFunction;
-import org.springframework.web.servlet.function.RouterFunctionDsl;
 import org.springframework.web.servlet.function.ServerResponse;
-import org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver;
 import sb.jafu.app.handler.JafuApplicationRestHandler;
-import sb.jafu.app.handler.error.CommonErrorResponse;
-import sb.jafu.app.handler.error.ErrorResultUtil;
-import sb.jafu.app.handler.error.JafuResponseEntityExceptionHandler;
+import sb.jafu.app.handler.JafuUserApplicationRestHandler;
+import sb.jafu.app.handler.error.*;
+import sb.jafu.app.routes.GeneralRoutes;
+import sb.jafu.app.routes.UserRoutes;
 
 import java.util.Arrays;
-import java.util.Objects;
+import java.util.function.Supplier;
 
-import static org.springframework.http.MediaType.APPLICATION_JSON;
-import static org.springframework.http.MediaType.TEXT_PLAIN;
-import static org.springframework.web.servlet.function.RequestPredicates.accept;
-import static org.springframework.web.servlet.function.RequestPredicates.contentType;
 import static org.springframework.web.servlet.function.RouterFunctions.route;
 
 public class JafuApplication {
@@ -53,21 +46,10 @@ public class JafuApplication {
 		this.initializer = context -> {
 			new MessageSourceInitializer().initialize(context);
 			context.registerBean(CommandLineRunner.class, () -> args -> System.out.println("jafu running!"));
-
-			JafuApplicationRestHandler handler = new JafuApplicationRestHandler();
-			context.registerBean(BeanDefinitionReaderUtils.uniqueBeanName(RouterFunctionDsl.class.getName(), context), RouterFunction.class
-					, () ->	route()
-							.onError((ex-> ex instanceof HttpMessageNotReadableException), (t, request) -> {
-								HttpMessageNotReadableException ee = (HttpMessageNotReadableException) t;
-								String instanceDetails = "http message not readable: " + ee.getMostSpecificCause().getMessage();
-								String instanceDebugDetails = "-";
-								CommonErrorResponse resp = ErrorResultUtil.logAndGetCommonErrorResponse(ee, instanceDetails, instanceDebugDetails);
-								return ServerResponse.status(HttpStatus.BAD_REQUEST).contentType(APPLICATION_JSON).body(resp);
-							})
-							.GET("/text", accept(TEXT_PLAIN), handler::getTextResponse)
-							.GET("/json", accept(APPLICATION_JSON), handler::getMessageJsonResponse)
-                            .POST("/json", accept(APPLICATION_JSON).and(contentType(APPLICATION_JSON)), handler::postMessageJson)
-							.build());
+			context.registerBean(BeanDefinitionReaderUtils.uniqueBeanName(GeneralRoutes.class.getName(), context), RouterFunction.class
+					, GeneralRoutes.getRoutes().apply(new JafuApplicationRestHandler()));
+			context.registerBean(BeanDefinitionReaderUtils.uniqueBeanName(UserRoutes.class.getName(), context), RouterFunction.class
+					, UserRoutes.getRoutes().apply(new JafuUserApplicationRestHandler()));
 
 			serverProperties.setPort(8080);
 			new StringConverterInitializer().initialize(context);

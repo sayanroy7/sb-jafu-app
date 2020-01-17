@@ -1,14 +1,14 @@
 package sb.jafu.app.handler;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import sb.jafu.app.model.Message;
-import sb.jafu.app.model.Metadata;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
 import org.springframework.web.servlet.function.ServerRequest;
 import org.springframework.web.servlet.function.ServerResponse;
+import sb.jafu.app.model.Message;
+import sb.jafu.app.model.Metadata;
 
 import javax.servlet.ServletException;
 import java.io.IOException;
