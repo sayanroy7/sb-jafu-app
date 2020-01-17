@@ -285,6 +285,14 @@
     "allPublicFields": true,
     "allDeclaredMethods": true,
     "allPublicMethods": true
+  },
+  {
+    "name": "sb.jafu.app.model.User",
+    "allDeclaredConstructors": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true
   }
 ]
 
