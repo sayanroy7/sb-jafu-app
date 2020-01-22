@@ -207,6 +207,14 @@
     "allPublicMethods": true
   },
   {
+    "name": "org.springframework.http.converter.xml.Jaxb2RootElementHttpMessageConverter",
+    "allDeclaredConstructors": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true
+  },
+  {
     "name": "sb.jafu.app.handler.error.JafuResponseEntityExceptionHandler",
     "allDeclaredConstructors": true,
     "allDeclaredFields": true,
