@@ -207,7 +207,7 @@
     "allPublicMethods": true
   },
   {
-    "name": "org.springframework.http.converter.xml.Jaxb2RootElementHttpMessageConverter",
+    "name": "com.sun.org.apache.xalan.internal.xsltc.trax.TransformerFactoryImpl",
     "allDeclaredConstructors": true,
     "allDeclaredFields": true,
     "allPublicFields": true,

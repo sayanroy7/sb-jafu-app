@@ -47,7 +47,7 @@ public class JafuUserApplicationRestHandler {
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.add(HttpHeaders.ACCEPT, APPLICATION_JSON_VALUE);
         httpHeaders.add(HttpHeaders.CONTENT_TYPE, APPLICATION_JSON_VALUE);
-        httpHeaders.add(HttpHeaders.AUTHORIZATION, "Bearer xoxb-849306422434-862102814288-w1QMTQXX2iDKgfoYMAPbcCa3");
+        httpHeaders.add(HttpHeaders.AUTHORIZATION, "");
 
         SlackMessage slackMessage = new SlackMessage();
         slackMessage.setChannel("CRC2W0Q3F");
