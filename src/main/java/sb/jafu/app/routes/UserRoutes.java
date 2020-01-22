@@ -8,6 +8,7 @@ import java.util.function.Supplier;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.web.servlet.function.RequestPredicates.accept;
+import static org.springframework.web.servlet.function.RequestPredicates.contentType;
 import static org.springframework.web.servlet.function.RouterFunctions.route;
 import static sb.jafu.app.handler.error.JafuErrorHandlerBiFunctions.HTTPMESSAGENOTREADABLE_HANDLER_FUCNTION;
 import static sb.jafu.app.handler.error.JafuErrorHandlerPredicates.HTTPMESSAGENOTREADABLEEXCEPTION;
@@ -23,6 +24,7 @@ public class UserRoutes {
                 .path("/user", b1 -> b1.
                         nest(accept(APPLICATION_JSON), b2 -> b2.
                                 GET("/json", accept(APPLICATION_JSON), handler::getUserJsonResponse)
+                                .POST("/json", accept(APPLICATION_JSON).and(contentType(APPLICATION_JSON)), handler::postUserJsonResponse)
                         )
                 )
                 .build());

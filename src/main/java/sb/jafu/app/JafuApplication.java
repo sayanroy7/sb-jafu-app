@@ -17,8 +17,10 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.GenericApplicationContext;
 import org.springframework.context.support.JafuWebMvcRegistrations;
 import org.springframework.context.support.ServletWebServerApplicationContextWithoutSpel;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.function.RouterFunction;
 import org.springframework.web.servlet.function.ServerResponse;
+import sb.jafu.app.client.JafuRestClient;
 import sb.jafu.app.handler.JafuApplicationRestHandler;
 import sb.jafu.app.handler.JafuUserApplicationRestHandler;
 import sb.jafu.app.handler.error.*;
@@ -46,10 +48,15 @@ public class JafuApplication {
 		this.initializer = context -> {
 			new MessageSourceInitializer().initialize(context);
 			context.registerBean(CommandLineRunner.class, () -> args -> System.out.println("jafu running!"));
+			RestTemplate restTemplate = new RestTemplate();
+			context.registerBean("restTemplate", RestTemplate.class, () -> restTemplate);
+			JafuRestClient jafuRestClient = new JafuRestClient(restTemplate);
+			context.registerBean(BeanDefinitionReaderUtils.uniqueBeanName(JafuRestClient.class.getName(), context), JafuRestClient.class
+					, () -> jafuRestClient);
 			context.registerBean(BeanDefinitionReaderUtils.uniqueBeanName(GeneralRoutes.class.getName(), context), RouterFunction.class
 					, GeneralRoutes.getRoutes().apply(new JafuApplicationRestHandler()));
 			context.registerBean(BeanDefinitionReaderUtils.uniqueBeanName(UserRoutes.class.getName(), context), RouterFunction.class
-					, UserRoutes.getRoutes().apply(new JafuUserApplicationRestHandler()));
+					, UserRoutes.getRoutes().apply(new JafuUserApplicationRestHandler(jafuRestClient)));
 
 			serverProperties.setPort(8080);
 			new StringConverterInitializer().initialize(context);
