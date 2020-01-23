@@ -36,6 +36,7 @@ echo "Compiling $ARTIFACT with $GRAALVM_VERSION"
   -H:ReflectionConfigurationFiles=../../tomcat-reflection.json,../../reflection-config.json -H:ResourceConfigurationFiles=../../tomcat-resource.json \
   -H:Name=$ARTIFACT \
   -H:+ReportExceptionStackTraces \
+  -H:EnableURLProtocols=https \
   --allow-incomplete-classpath \
   --report-unsupported-elements-at-runtime \
   -cp $CP $MAINCLASS >> output.txt ; } 2>> output.txt
