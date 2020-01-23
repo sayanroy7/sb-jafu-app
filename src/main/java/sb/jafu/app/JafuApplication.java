@@ -20,21 +20,17 @@ import org.springframework.context.support.ServletWebServerApplicationContextWit
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.function.RouterFunction;
-import org.springframework.web.servlet.function.ServerResponse;
 import org.springframework.web.servlet.mvc.method.annotation.JafuHttpMessageConvertes;
 import sb.jafu.app.client.JafuRestClient;
 import sb.jafu.app.handler.JafuApplicationRestHandler;
 import sb.jafu.app.handler.JafuUserApplicationRestHandler;
-import sb.jafu.app.handler.error.*;
+import sb.jafu.app.handler.error.JafuResponseEntityExceptionHandler;
 import sb.jafu.app.routes.GeneralRoutes;
 import sb.jafu.app.routes.UserRoutes;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
-
-import static org.springframework.web.servlet.function.RouterFunctions.route;
 
 public class JafuApplication {
 
