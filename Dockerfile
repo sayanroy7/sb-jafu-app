@@ -1,5 +1,4 @@
 FROM oracle/graalvm-ce:19.3.0.2-java8
-#RUN gu install ruby
 RUN mkdir -pv /opt/native/
 COPY target/sb-jafu-app /opt/native
 EXPOSE 8080/tcp
