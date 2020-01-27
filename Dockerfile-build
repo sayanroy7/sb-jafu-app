@@ -2,6 +2,9 @@ FROM oracle/graalvm-ce:19.3.0.2-java8
 RUN gu install native-image
 RUN echo $(native-image --version)
 RUN echo "Building graal native image"
+RUN echo "moving $PWD to temp"
+#RUN mkdir -pv /opt/sb-jafu-app/
+WORKDIR .
 RUN sh compile.sh
 RUN echo "native image generated!"
 RUN ls -ltra target/sb-jafu-app
