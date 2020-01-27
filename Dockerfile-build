@@ -1,7 +1,7 @@
 FROM oracle/graalvm-ce:19.3.0.2-java8
-CMD gu install native-image
-echo $(native-image --version)
-echo "Building graal native image"
-sh compile.sh
-echo "native image generated!"
-ls -ltra target/sb-jafu-app
+RUN gu install native-image
+RUN echo $(native-image --version)
+RUN echo "Building graal native image"
+RUN sh compile.sh
+RUN echo "native image generated!"
+RUN ls -ltra target/sb-jafu-app
