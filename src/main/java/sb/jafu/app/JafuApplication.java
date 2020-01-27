@@ -71,6 +71,7 @@ public class JafuApplication {
 			context.registerBean(BeanDefinitionReaderUtils.uniqueBeanName(JafuResponseEntityExceptionHandler.class.getName(), context)
 					, JafuResponseEntityExceptionHandler.class, () -> new JafuResponseEntityExceptionHandler(context.getEnvironment()));
 			webMvcProperties.setThrowExceptionIfNoHandlerFound(true);
+
 			new ServletWebServerInitializer(serverProperties, httpProperties, webMvcProperties, resourceProperties).initialize(context);
 		};
 	}

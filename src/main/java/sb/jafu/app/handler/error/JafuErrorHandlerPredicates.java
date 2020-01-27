@@ -1,5 +1,7 @@
 package sb.jafu.app.handler.error;
 
+import io.jsonwebtoken.JwtException;
+import io.jsonwebtoken.MalformedJwtException;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 
 import java.util.function.Predicate;
@@ -9,7 +11,9 @@ import java.util.function.Predicate;
  */
 public enum  JafuErrorHandlerPredicates {
 
-    HTTPMESSAGENOTREADABLEEXCEPTION(e -> e instanceof HttpMessageNotReadableException)
+    HTTPMESSAGENOTREADABLEEXCEPTION(e -> e instanceof HttpMessageNotReadableException),
+    JWTMALFORMEDEXCEPTION(e -> e instanceof MalformedJwtException),
+    JWTEXCEPTION(e -> e instanceof JwtException)
     ;
 
     JafuErrorHandlerPredicates(Predicate<Throwable> predicate) {

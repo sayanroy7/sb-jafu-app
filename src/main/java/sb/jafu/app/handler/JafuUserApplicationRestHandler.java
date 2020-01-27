@@ -3,7 +3,6 @@ package sb.jafu.app.handler;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.boot.env.YamlPropertySourceLoader;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.*;
 import org.springframework.util.StringUtils;
@@ -14,6 +13,7 @@ import sb.jafu.app.client.JafuRestClient;
 import sb.jafu.app.client.RestClientException;
 import sb.jafu.app.model.SlackMessage;
 import sb.jafu.app.model.User;
+import sb.jafu.app.security.JafuJwtAuthentication;
 
 import javax.servlet.ServletException;
 import java.io.IOException;
@@ -22,7 +22,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
@@ -42,19 +45,21 @@ public class JafuUserApplicationRestHandler {
         String slackBotToken = null;
         //from "spring.cloud.bootstrap.location" specified application.yml file.
         String bootstrapConfigLocation = System.getProperty("spring.config.location");
+        boolean isClassPath = false;
         Path yamlFilePath = null;
         if (bootstrapConfigLocation == null) {
             bootstrapConfigLocation = "application.yml";
-            try {
+            isClassPath = true;
+            /*try {
                 yamlFilePath = Paths.get(new ClassPathResource(bootstrapConfigLocation).getURI());
             } catch (IOException e) {
                 e.printStackTrace();
-            }
+            }*/
         } else {
             yamlFilePath = Paths.get(bootstrapConfigLocation);
         }
 
-        try (InputStream inputStream = Files.newInputStream(yamlFilePath)) {
+        try (InputStream inputStream = isClassPath ? JafuUserApplicationRestHandler.class.getClassLoader().getResourceAsStream(bootstrapConfigLocation) : Files.newInputStream(yamlFilePath)) {
             Yaml yaml = new Yaml();
             Map<String, Object> yamlConfigs = yaml.load(inputStream);
             @SuppressWarnings("unchecked") Map<String, Object> slackYamlConfigs = (Map<String, Object>) yamlConfigs.get("slack");
@@ -79,6 +84,16 @@ public class JafuUserApplicationRestHandler {
 
     public JafuUserApplicationRestHandler(JafuRestClient jafuRestClient) {
         this.jafuRestClient = jafuRestClient;
+    }
+
+    public ServerResponse getNotAccessibleUser(ServerRequest request) {
+        User user = new User();
+        user.setUsername("Not Accessible User");
+        user.setEmail("user1@example.com");
+        user.setMobile(8878787778L);
+        user.setUserMetadata(Collections.singletonMap("location", "Nowhere"));
+
+        return ok().contentType(APPLICATION_JSON).body(user);
     }
 
     public ServerResponse getUserJsonResponse(ServerRequest request) throws JsonProcessingException {
@@ -106,6 +121,22 @@ public class JafuUserApplicationRestHandler {
         ResponseEntity<String> responseEntity = jafuRestClient.execute("https://slack.com/api/chat.postMessage", HttpMethod.POST, httpEntity, String.class);
 
         return status(responseEntity.getStatusCode()).contentType(APPLICATION_JSON).body(user);
+    }
+
+    public ServerResponse getUserCustomerResponse(ServerRequest request) {
+        User user = new User();
+        user.setUsername("user1");
+        user.setEmail("user1@example.com");
+        user.setMobile(8878787778L);
+        Map<String, String> metadata = new HashMap<>();
+        metadata.put("location", "planet Earth");
+        Optional<Object> authentication = request.attribute("authentication");
+        if (authentication.isPresent()) {
+            JafuJwtAuthentication authentication1 = (JafuJwtAuthentication) authentication.get();
+            metadata.put("customers", String.join(" || ", authentication1.getCustomers()));
+        }
+        user.setUserMetadata(metadata);
+        return ok().contentType(APPLICATION_JSON).body(user);
     }
 
 }

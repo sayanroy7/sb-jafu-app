@@ -1,5 +1,8 @@
 package sb.jafu.app.handler.error;
 
+import io.jsonwebtoken.JwtException;
+import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.UnsupportedJwtException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.servlet.function.ServerRequest;
@@ -17,6 +20,24 @@ public enum JafuErrorHandlerBiFunctions {
         String instanceDebugDetails = "-";
         CommonErrorResponse resp = ErrorResultUtil.logAndGetCommonErrorResponse(ee, instanceDetails, instanceDebugDetails);
         return ServerResponse.status(HttpStatus.BAD_REQUEST).contentType(APPLICATION_JSON).body(resp);
+    }),
+
+    JWTMALFORMEDEXCEPTION_HANDLER_FUCNTION((t, request) -> {
+        MalformedJwtException ee = (MalformedJwtException) t;
+        String instanceDetails = "http message not readable: " + ee.getMessage();
+        String instanceDebugDetails = "-";
+        CommonErrorResponse resp = ErrorResultUtil.logAndGetCommonErrorResponse(ee, instanceDetails, instanceDebugDetails);
+        resp.setStatus(HttpStatus.UNAUTHORIZED);
+        return ServerResponse.status(HttpStatus.UNAUTHORIZED).contentType(APPLICATION_JSON).body(resp);
+    }),
+
+    JWTEXCEPTION_HANDLER_FUCNTION((t, request) -> {
+        JwtException ee = (JwtException) t;
+        String instanceDetails = "http message not readable: " + ee.getMessage();
+        String instanceDebugDetails = "-";
+        CommonErrorResponse resp = ErrorResultUtil.logAndGetCommonErrorResponse(ee, instanceDetails, instanceDebugDetails);
+        resp.setStatus(HttpStatus.UNAUTHORIZED);
+        return ServerResponse.status(HttpStatus.UNAUTHORIZED).contentType(APPLICATION_JSON).body(resp);
     })
 
 
