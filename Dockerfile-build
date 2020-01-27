@@ -9,3 +9,9 @@ RUN echo "Building graal native image"
 RUN sh compile.sh
 RUN echo "native image generated!"
 RUN ls -ltra target/sb-jafu-app
+RUN echo "native image generated!"
+RUN mkdir -pv /opt/native/
+COPY target/sb-jafu-app /opt/native
+EXPOSE 8080/tcp
+RUN echo 'Going to start JAFU web app'
+CMD /opt/native/sb-jafu-app

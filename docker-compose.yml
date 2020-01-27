@@ -1,0 +1,22 @@
+version: '3.1'
+services:
+  sb-jafu-mongodb:
+    container_name: sb-jafu-mongod-container
+    image: mongo:3.6
+    restart: always
+    environment:
+      - MONGO_DATA_DIR=/data/db
+      - MONGO_LOG_DIR=/dev/null
+    ports:
+      - 27017:27017
+    command: mongod --smallfiles --logpath=/dev/null # --quiet
+
+  sb-jafu-app:
+    build: .
+    image: sb-jafu-app:latest
+    container_name: sb-jafu-app-container
+    working_dir: /opt/native
+    ports:
+      - 8080:8080
+    depends_on:
+      - sb-jafu-mongodb
