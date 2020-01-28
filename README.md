@@ -1,6 +1,6 @@
-#Spring Boot GraalVM Native App
+# Spring Boot GraalVM Native App
 
-##Background
+## Background
 
 This project is inspired by [Spring Fu incubator](https://github.com/spring-projects-experimental/spring-fu)
 and leverages an optimized builtin GraalVM feature that discards CGLIB and
