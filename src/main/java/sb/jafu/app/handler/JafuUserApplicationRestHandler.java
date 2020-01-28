@@ -3,9 +3,6 @@ package sb.jafu.app.handler;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeansException;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
 import org.springframework.http.*;
 import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.function.ServerRequest;
@@ -24,10 +21,8 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
@@ -37,7 +32,7 @@ import static org.springframework.web.servlet.function.ServerResponse.status;
 /**
  * @author SAROY on 1/17/2020
  */
-public class JafuUserApplicationRestHandler implements ApplicationContextAware {
+public class JafuUserApplicationRestHandler {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(JafuUserApplicationRestHandler.class);
 
@@ -142,14 +137,30 @@ public class JafuUserApplicationRestHandler implements ApplicationContextAware {
     }
 
     public ServerResponse saveUserMongoResponse(ServerRequest request) throws ServletException, IOException {
-        User savedUser = context.getBean(UserRepository.class).save(request.body(User.class));
+        User savedUser = userRepository.save(request.body(User.class));
         return ok().contentType(APPLICATION_JSON).body(savedUser);
     }
 
-    private ApplicationContext context;
+    public ServerResponse getAllUsersMongoResponse(ServerRequest request) {
+        List<User> users = userRepository.findAll();
+        if (LOGGER.isInfoEnabled()) {
+            LOGGER.info("Users found in MongoDB: {}", users.stream().map(usr -> users.toString()).collect(Collectors.joining()));
+        }
+        return ok().contentType(APPLICATION_JSON).body(users);
+    }
 
-    @Override
-    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-        this.context = applicationContext;
+    public ServerResponse getUserByIdMongoResponse(ServerRequest request) {
+        String userId = request.pathVariable("id");
+        User user = userRepository.findOne(userId);
+        if (LOGGER.isInfoEnabled()) {
+            LOGGER.info("User found in MongoDB: {}", user);
+        }
+        return ok().contentType(APPLICATION_JSON).body(user);
+    }
+
+    private UserRepository userRepository;
+
+    public void setUserRepository(UserRepository userRepository) {
+        this.userRepository = userRepository;
     }
 }

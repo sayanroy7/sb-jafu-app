@@ -27,19 +27,25 @@ public class UserRoutes {
                 .path("/user", b1 -> b1.
                         nest(accept(APPLICATION_JSON), b2 -> b2.
                                 nest(all(), b3 -> b3.GET("/json", handler::getUserJsonResponse)
-                                        .filter(SecurityHandlerFunction.hasAnyAuth("data:raw:admin")))
+                                        .filter(SecurityHandlerFunction.hasAnyAuth("users:read")))
                                 .nest(all(), b4 -> b4
                                         .POST("/json", contentType(APPLICATION_JSON), handler::postUserJsonResponse)
-                                        .filter(SecurityHandlerFunction.hasAnyAuth("data:ogc:admin")))
+                                        .filter(SecurityHandlerFunction.hasAnyAuth("users:admin")))
                                 .nest(all(), b5 -> b5.
-                                        GET("/nauser", accept(APPLICATION_JSON), handler::getNotAccessibleUser)
-                                        .filter(SecurityHandlerFunction.hasAnyAuth("mars:scope")))
+                                        GET("/json/sys", accept(APPLICATION_JSON), handler::getNotAccessibleUser)
+                                        .filter(SecurityHandlerFunction.hasAnyAuth("system:admin")))
                                 .nest(all(), b6 -> b6.
-                                        GET("/customers", accept(APPLICATION_JSON), handler::getUserCustomerResponse)
+                                        GET("/json/customers", accept(APPLICATION_JSON), handler::getUserCustomerResponse)
                                         .filter(SecurityHandlerFunction.hasAnyAuth("customers:admin")))
                                 .nest(all(), b7 -> b7.
-                                        POST("/customers", accept(APPLICATION_JSON), handler::saveUserMongoResponse)
-                                        .filter(SecurityHandlerFunction.hasAnyAuth("customers:admin")))
+                                        POST("/json/mongo", accept(APPLICATION_JSON), handler::saveUserMongoResponse)
+                                        .filter(SecurityHandlerFunction.hasAnyAuth("mongo:admin")))
+                                .nest(all(), b8 -> b8.
+                                        GET("/json/mongo", accept(APPLICATION_JSON), handler::getAllUsersMongoResponse)
+                                        .filter(SecurityHandlerFunction.hasAnyAuth("mongo:admin")))
+                                .nest(all(), b9 -> b9.
+                                        GET("/json/mongo/{id}", accept(APPLICATION_JSON), handler::getUserByIdMongoResponse)
+                                        .filter(SecurityHandlerFunction.hasAnyAuth("mongo:admin")))
                         )
                 )
                 .build());

@@ -16,8 +16,6 @@ public class UserRepository {
         this.mongo = mongo;
     }
 
-
-
     public List<User> findAll() {
         return mongo.findAll(User.class, "user");
     }

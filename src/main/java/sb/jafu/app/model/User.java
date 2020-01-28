@@ -56,4 +56,16 @@ public class User {
     public void setUserMetadata(Map<String, String> userMetadata) {
         this.userMetadata = userMetadata;
     }
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("User{");
+        sb.append("id='").append(id).append('\'');
+        sb.append(", username='").append(username).append('\'');
+        sb.append(", email='").append(email).append('\'');
+        sb.append(", mobile=").append(mobile);
+        sb.append(", userMetadata=").append(userMetadata);
+        sb.append('}');
+        return sb.toString();
+    }
 }

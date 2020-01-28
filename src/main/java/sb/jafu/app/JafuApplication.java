@@ -61,17 +61,27 @@ public class JafuApplication {
 			JafuRestClient jafuRestClient = new JafuRestClient(restTemplate);
 			context.registerBean(BeanDefinitionReaderUtils.uniqueBeanName(JafuRestClient.class.getName(), context), JafuRestClient.class
 					, () -> jafuRestClient);
+
+			//General route handlerFunctions
+			//TODO: convert to DSL
+			JafuApplicationRestHandler jafuApplicationRestHandler = new JafuApplicationRestHandler();
+			context.registerBean(BeanDefinitionReaderUtils.uniqueBeanName(JafuApplicationRestHandler.class.getName(), context),
+					JafuApplicationRestHandler.class, () -> jafuApplicationRestHandler);
 			context.registerBean(BeanDefinitionReaderUtils.uniqueBeanName(GeneralRoutes.class.getName(), context), RouterFunction.class
-					, GeneralRoutes.getRoutes().apply(new JafuApplicationRestHandler()));
+					, GeneralRoutes.getRoutes().apply(jafuApplicationRestHandler));
+
+
+			//user route handler functions
+			//TODO: convert to DSL
 			JafuUserApplicationRestHandler userRestHandler = new JafuUserApplicationRestHandler(jafuRestClient);
-			userRestHandler.setApplicationContext(context);
+			context.registerBean(BeanDefinitionReaderUtils.uniqueBeanName(JafuUserApplicationRestHandler.class.getName(), context),
+					JafuUserApplicationRestHandler.class, () -> userRestHandler);
 			context.registerBean(BeanDefinitionReaderUtils.uniqueBeanName(UserRoutes.class.getName(), context), RouterFunction.class
 					, UserRoutes.getRoutes().apply(userRestHandler));
 
 			serverProperties.setPort(8080);
 			new StringConverterInitializer().initialize(context);
 			new ResourceConverterInitializer().initialize(context);
-
 			new JacksonInitializer(new JacksonProperties()).initialize(context);
 			new JacksonJsonConverterInitializer().initialize(context);
 
@@ -84,6 +94,7 @@ public class JafuApplication {
 			new ServletWebServerInitializer(serverProperties, httpProperties, webMvcProperties, resourceProperties).initialize(context);
 
 
+			//TODO: convert to DSL
 			MongoProperties properties = new MongoProperties();
 			properties.setHost("localhost");
 			properties.setPort(27017);
@@ -91,20 +102,10 @@ public class JafuApplication {
 			properties.setDatabase("sb-jafu-app");
 			properties.setUsername("admin");
 			properties.setPassword("admin".toCharArray());
-			//properties.setUri("mongodb://sb-jafu-app:welcome@localhost:27017/sb-jafu-app");
-			//properties.setAuthenticationDatabase("admin");
-			//EmbeddedMongoProperties embeddedMongoProperties = new EmbeddedMongoProperties();
+
 			new MongoDataInitializer(properties).initialize(context);
 			new MongoDataAutoInitializer(properties).initialize(context);
 			new MongoAutoInitializer(properties).initialize(context);
-			//context.getBeanProvider(MongoClient.class);
-
-			//new MongoReactiveDataInitializer(properties).initialize(context);
-			//new MongoReactiveInitializer(properties, false)
-			//		.initialize(context);
-			//new EmbeddedMongoInitializer(properties, embeddedMongoProperties).initialize(context);
-
-
 		};
 	}
 
@@ -146,8 +147,10 @@ public class JafuApplication {
 		GenericApplicationContext context = (GenericApplicationContext) jafuApplication.run(args);
 
 
+		//TODO: move to DSL
 		UserRepository userRepository = new UserRepository(context.getBean(MongoTemplate.class));
 		context.registerBean("userRepository", UserRepository.class, () -> userRepository);
+		context.getBean(JafuUserApplicationRestHandler.class).setUserRepository(userRepository);
 		Thread.currentThread().join(); // To be able to measure memory consumption
 	}
 	
