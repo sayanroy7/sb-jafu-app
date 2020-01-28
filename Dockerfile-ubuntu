@@ -2,5 +2,4 @@ FROM ubuntu
 RUN mkdir -pv /opt/native/
 COPY target/sb-jafu-app /opt/native
 EXPOSE 8080/tcp
-RUN echo 'Going to start JAFU web app'
 ENTRYPOINT ["/opt/native/sb-jafu-app"]

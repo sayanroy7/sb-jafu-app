@@ -1,0 +1,14 @@
+FROM oracle/graalvm-ce:19.3.0.2-java8 AS builder
+RUN gu install native-image
+RUN mkdir /tmp/sb-jafu-app/
+COPY . /tmp/sb-jafu-app
+WORKDIR /tmp/sb-jafu-app/
+RUN sh compile.sh
+
+
+FROM ubuntu
+RUN mkdir -pv /opt/native/
+WORKDIR /root/
+COPY --from=builder /tmp/sb-jafu-app/target/sb-jafu-app /opt/native
+EXPOSE 8080/tcp
+ENTRYPOINT ["/opt/native/sb-jafu-app"]

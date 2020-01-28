@@ -11,6 +11,12 @@ services:
       - 27017:27017
     command: mongod --smallfiles --logpath=/dev/null # --quiet
 
+  sb-jafu-app-graal-native:
+    build:
+      context: .
+      dockerfile: Dockerfile-graalvm
+    image: sb-jafu-app-graal-native:latest
+
   sb-jafu-app:
     build: .
     image: sb-jafu-app:latest
@@ -19,4 +25,5 @@ services:
     ports:
       - 8080:8080
     depends_on:
+      - sb-jafu-app-graal-native
       - sb-jafu-mongodb
