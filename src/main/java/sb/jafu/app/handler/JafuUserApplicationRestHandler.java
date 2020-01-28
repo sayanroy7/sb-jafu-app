@@ -3,7 +3,9 @@ package sb.jafu.app.handler;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.core.io.ClassPathResource;
+import org.springframework.beans.BeansException;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.http.*;
 import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.function.ServerRequest;
@@ -13,6 +15,7 @@ import sb.jafu.app.client.JafuRestClient;
 import sb.jafu.app.client.RestClientException;
 import sb.jafu.app.model.SlackMessage;
 import sb.jafu.app.model.User;
+import sb.jafu.app.repository.UserRepository;
 import sb.jafu.app.security.JafuJwtAuthentication;
 
 import javax.servlet.ServletException;
@@ -25,7 +28,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
@@ -35,7 +37,7 @@ import static org.springframework.web.servlet.function.ServerResponse.status;
 /**
  * @author SAROY on 1/17/2020
  */
-public class JafuUserApplicationRestHandler {
+public class JafuUserApplicationRestHandler implements ApplicationContextAware {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(JafuUserApplicationRestHandler.class);
 
@@ -139,4 +141,15 @@ public class JafuUserApplicationRestHandler {
         return ok().contentType(APPLICATION_JSON).body(user);
     }
 
+    public ServerResponse saveUserMongoResponse(ServerRequest request) throws ServletException, IOException {
+        User savedUser = context.getBean(UserRepository.class).save(request.body(User.class));
+        return ok().contentType(APPLICATION_JSON).body(savedUser);
+    }
+
+    private ApplicationContext context;
+
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        this.context = applicationContext;
+    }
 }

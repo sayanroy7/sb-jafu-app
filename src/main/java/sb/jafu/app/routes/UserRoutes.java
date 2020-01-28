@@ -37,6 +37,9 @@ public class UserRoutes {
                                 .nest(all(), b6 -> b6.
                                         GET("/customers", accept(APPLICATION_JSON), handler::getUserCustomerResponse)
                                         .filter(SecurityHandlerFunction.hasAnyAuth("customers:admin")))
+                                .nest(all(), b7 -> b7.
+                                        POST("/customers", accept(APPLICATION_JSON), handler::saveUserMongoResponse)
+                                        .filter(SecurityHandlerFunction.hasAnyAuth("customers:admin")))
                         )
                 )
                 .build());

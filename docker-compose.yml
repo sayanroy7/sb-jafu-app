@@ -7,6 +7,9 @@ services:
     environment:
       - MONGO_DATA_DIR=/data/db
       - MONGO_LOG_DIR=/dev/null
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=admin
+      - MONGO_INITDB_DATABASE=sb-jafu-app
     ports:
       - 27017:27017
     command: mongod --smallfiles --logpath=/dev/null # --quiet

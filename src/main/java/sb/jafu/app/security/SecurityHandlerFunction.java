@@ -36,7 +36,8 @@ public class SecurityHandlerFunction {
                     Claims idTokenClaims = getIdTokenClaims(idToken.get(0));
                     if (isAnyAuthorized((List<String>) accessTokenClaims.get("scope"), scopes)) {
                         JafuJwtAuthentication authentication = new JafuJwtAuthentication(idToken.get(0), idTokenClaims, accessTokenClaims);
-                        return next.handle(ServerRequest.from(request).attribute("authentication", authentication).build());
+                        request.servletRequest().setAttribute("authentication", authentication);
+                        return next.handle(request);
                     } else {
                         return ServerResponse.status(HttpStatus.UNAUTHORIZED).body(getUnAuthorizedResponse(request.path()));
                     }

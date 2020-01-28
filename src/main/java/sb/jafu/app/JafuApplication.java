@@ -1,13 +1,16 @@
 package sb.jafu.app;
 
+import com.mongodb.MongoClient;
 import org.springframework.beans.factory.support.BeanDefinitionReaderUtils;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.autoconfigure.context.MessageSourceInitializer;
+import org.springframework.boot.autoconfigure.data.mongo.MongoDataInitializer;
 import org.springframework.boot.autoconfigure.http.HttpProperties;
 import org.springframework.boot.autoconfigure.jackson.JacksonInitializer;
 import org.springframework.boot.autoconfigure.jackson.JacksonProperties;
+import org.springframework.boot.autoconfigure.mongo.MongoProperties;
 import org.springframework.boot.autoconfigure.web.ResourceProperties;
 import org.springframework.boot.autoconfigure.web.ServerProperties;
 import org.springframework.boot.autoconfigure.web.servlet.*;
@@ -17,6 +20,7 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.GenericApplicationContext;
 import org.springframework.context.support.JafuWebMvcRegistrations;
 import org.springframework.context.support.ServletWebServerApplicationContextWithoutSpel;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.function.RouterFunction;
@@ -25,6 +29,9 @@ import sb.jafu.app.client.JafuRestClient;
 import sb.jafu.app.handler.JafuApplicationRestHandler;
 import sb.jafu.app.handler.JafuUserApplicationRestHandler;
 import sb.jafu.app.handler.error.JafuResponseEntityExceptionHandler;
+import org.springframework.boot.autoconfigure.data.mongo.MongoAutoInitializer;
+import org.springframework.boot.autoconfigure.data.mongo.MongoDataAutoInitializer;
+import sb.jafu.app.repository.UserRepository;
 import sb.jafu.app.routes.GeneralRoutes;
 import sb.jafu.app.routes.UserRoutes;
 
@@ -56,8 +63,10 @@ public class JafuApplication {
 					, () -> jafuRestClient);
 			context.registerBean(BeanDefinitionReaderUtils.uniqueBeanName(GeneralRoutes.class.getName(), context), RouterFunction.class
 					, GeneralRoutes.getRoutes().apply(new JafuApplicationRestHandler()));
+			JafuUserApplicationRestHandler userRestHandler = new JafuUserApplicationRestHandler(jafuRestClient);
+			userRestHandler.setApplicationContext(context);
 			context.registerBean(BeanDefinitionReaderUtils.uniqueBeanName(UserRoutes.class.getName(), context), RouterFunction.class
-					, UserRoutes.getRoutes().apply(new JafuUserApplicationRestHandler(jafuRestClient)));
+					, UserRoutes.getRoutes().apply(userRestHandler));
 
 			serverProperties.setPort(8080);
 			new StringConverterInitializer().initialize(context);
@@ -73,6 +82,29 @@ public class JafuApplication {
 			webMvcProperties.setThrowExceptionIfNoHandlerFound(true);
 
 			new ServletWebServerInitializer(serverProperties, httpProperties, webMvcProperties, resourceProperties).initialize(context);
+
+
+			MongoProperties properties = new MongoProperties();
+			properties.setHost("localhost");
+			properties.setPort(27017);
+			properties.setAuthenticationDatabase("admin");
+			properties.setDatabase("sb-jafu-app");
+			properties.setUsername("admin");
+			properties.setPassword("admin".toCharArray());
+			//properties.setUri("mongodb://sb-jafu-app:welcome@localhost:27017/sb-jafu-app");
+			//properties.setAuthenticationDatabase("admin");
+			//EmbeddedMongoProperties embeddedMongoProperties = new EmbeddedMongoProperties();
+			new MongoDataInitializer(properties).initialize(context);
+			new MongoDataAutoInitializer(properties).initialize(context);
+			new MongoAutoInitializer(properties).initialize(context);
+			//context.getBeanProvider(MongoClient.class);
+
+			//new MongoReactiveDataInitializer(properties).initialize(context);
+			//new MongoReactiveInitializer(properties, false)
+			//		.initialize(context);
+			//new EmbeddedMongoInitializer(properties, embeddedMongoProperties).initialize(context);
+
+
 		};
 	}
 
@@ -110,7 +142,12 @@ public class JafuApplication {
 	}
 
 	public static void main(String[] args) throws InterruptedException {
-		new JafuApplication().run(args);
+		JafuApplication jafuApplication = new JafuApplication();
+		GenericApplicationContext context = (GenericApplicationContext) jafuApplication.run(args);
+
+
+		UserRepository userRepository = new UserRepository(context.getBean(MongoTemplate.class));
+		context.registerBean("userRepository", UserRepository.class, () -> userRepository);
 		Thread.currentThread().join(); // To be able to measure memory consumption
 	}
 	
