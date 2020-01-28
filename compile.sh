@@ -32,9 +32,10 @@ echo "Compiling $ARTIFACT with $GRAALVM_VERSION"
   --no-fallback \
   -H:EnableURLProtocols=http \
   --initialize-at-build-time \
-  --initialize-at-run-time=org.springframework.core.io.VfsUtils,org.apache.tomcat.jni.SSL \
+  --initialize-at-run-time=org.springframework.boot.autoconfigure,com.mongodb,org.springframework.data,com.github.jnr,com.github.jnr,org.xerial.snappy,com.github.luben,io.nettyorg.mongodb,org.springframework.core.io.VfsUtils,org.apache.tomcat.jni.SSL \
   -H:ReflectionConfigurationFiles=../../tomcat-reflection.json,../../reflection-config.json -H:ResourceConfigurationFiles=../../tomcat-resource.json \
   -H:Name=$ARTIFACT \
+  -H:+TraceClassInitialization \
   -H:+ReportExceptionStackTraces \
   -H:EnableURLProtocols=https \
   --allow-incomplete-classpath \
