@@ -474,6 +474,13 @@
     "name": "java.lang.Throwable",
     "allDeclaredConstructors": true,
     "allDeclaredFields": true
+  },
+  {
+    "name": "org.springframework.data.mongodb.core.mapping.event.AuditingEntityCallback",
+    "allDeclaredConstructors": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true
   }
 ]
-
