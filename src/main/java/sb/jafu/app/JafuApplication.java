@@ -1,11 +1,12 @@
 package sb.jafu.app;
 
-import com.mongodb.MongoClient;
 import org.springframework.beans.factory.support.BeanDefinitionReaderUtils;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.autoconfigure.context.MessageSourceInitializer;
+import org.springframework.boot.autoconfigure.data.mongo.MongoAutoInitializer;
+import org.springframework.boot.autoconfigure.data.mongo.MongoDataAutoInitializer;
 import org.springframework.boot.autoconfigure.data.mongo.MongoDataInitializer;
 import org.springframework.boot.autoconfigure.http.HttpProperties;
 import org.springframework.boot.autoconfigure.jackson.JacksonInitializer;
@@ -29,8 +30,6 @@ import sb.jafu.app.client.JafuRestClient;
 import sb.jafu.app.handler.JafuApplicationRestHandler;
 import sb.jafu.app.handler.JafuUserApplicationRestHandler;
 import sb.jafu.app.handler.error.JafuResponseEntityExceptionHandler;
-import org.springframework.boot.autoconfigure.data.mongo.MongoAutoInitializer;
-import org.springframework.boot.autoconfigure.data.mongo.MongoDataAutoInitializer;
 import sb.jafu.app.repository.UserRepository;
 import sb.jafu.app.routes.GeneralRoutes;
 import sb.jafu.app.routes.UserRoutes;

@@ -88,6 +88,16 @@
             <groupId>org.springframework.fu</groupId>
             <artifactId>spring-fu-autoconfigure-adapter</artifactId>
             <version>0.2.2</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>io.r2dbc</groupId>
+                    <artifactId>r2dbc-bom</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.springframework.data</groupId>
+                    <artifactId>spring-data-r2dbc</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>javax.validation</groupId>
