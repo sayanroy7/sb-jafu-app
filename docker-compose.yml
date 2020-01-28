@@ -13,6 +13,8 @@ services:
     ports:
       - 27017:27017
     command: mongod --smallfiles --logpath=/dev/null # --quiet
+    networks:
+      - shared-net
 
   sb-jafu-app-graal-native:
     build:
@@ -30,3 +32,11 @@ services:
     depends_on:
       - sb-jafu-app-graal-native
       - sb-jafu-mongodb
+    links:
+      - sb-jafu-mongodb
+    networks:
+      - shared-net
+
+networks:
+  shared-net:
+    driver: bridge
