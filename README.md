@@ -29,13 +29,13 @@ To run this project all you need is `docker` (17.x+) and `docker-compose`. You, 
 - It will start `mongodb` and a DB call - `sb-jafu-app`
 - Start the Spring Boot services with bunch of controllers.
 
-##Notes:
+## Notes:
 
 - Only first time it will build the full docker image from src code. 
 If you want to rebuild the image from src code run - `docker-compose down` and `docker-compose kill`
 - Then build - `docker-compose build` and `docker-compose up`
 
-##Security: 
+## Security: 
 
 - Security implementation is based on Spring Security Handler Function.
 - Uses - `io.jsonwebtoken` library to build and parse stateless JWT token.
