@@ -473,11 +473,7 @@
   {
     "name": "java.lang.Throwable",
     "allDeclaredConstructors": true,
-    "allDeclaredFields": true,
-    "allPrivateFields": true,
-    "allPublicFields": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true
+    "allDeclaredFields": true
   }
 ]
 
