@@ -95,12 +95,13 @@ public class JafuApplication {
 
 			//TODO: convert to DSL
 			MongoProperties properties = new MongoProperties();
-			properties.setHost("localhost");
+			properties.setUri("mongodb://sb-jafu-mongodb:27017/sb-jafu-app");
+			/*properties.setHost("sb-jafu-mongodb");
 			properties.setPort(27017);
 			properties.setAuthenticationDatabase("admin");
 			properties.setDatabase("sb-jafu-app");
 			properties.setUsername("admin");
-			properties.setPassword("admin".toCharArray());
+			properties.setPassword("admin".toCharArray());*/
 
 			new MongoDataInitializer(properties).initialize(context);
 			new MongoDataAutoInitializer(properties).initialize(context);
