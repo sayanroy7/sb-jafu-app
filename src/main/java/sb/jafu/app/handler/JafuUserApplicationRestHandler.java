@@ -144,9 +144,11 @@ public class JafuUserApplicationRestHandler {
     public ServerResponse getAllUsersMongoResponse(ServerRequest request) {
         List<User> users = userRepository.findAll();
         if (LOGGER.isInfoEnabled()) {
-            LOGGER.info("Users found in MongoDB: {}", users.stream().map(usr -> users.toString()).collect(Collectors.joining()));
+            if (users != null) {
+                LOGGER.info("Users found in MongoDB: {}", users.stream().map(usr -> users.toString()).collect(Collectors.joining()));
+            }
         }
-        return ok().contentType(APPLICATION_JSON).body(users);
+        return ok().contentType(APPLICATION_JSON).body(users != null ? users : Collections.emptyList());
     }
 
     public ServerResponse getUserByIdMongoResponse(ServerRequest request) {
@@ -155,7 +157,7 @@ public class JafuUserApplicationRestHandler {
         if (LOGGER.isInfoEnabled()) {
             LOGGER.info("User found in MongoDB: {}", user);
         }
-        return ok().contentType(APPLICATION_JSON).body(user);
+        return ok().contentType(APPLICATION_JSON).body(user != null ? user : "{}");
     }
 
     private UserRepository userRepository;
